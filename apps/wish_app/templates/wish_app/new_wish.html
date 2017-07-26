@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Wish App</title>
+</head>
+<body>
+<!--Add new item to wish list and need to validate the field is not empty-->
+    <h1>Create a New Wish List Item</h1>
+    <form action="{% url 'create-wish' %}" method="post">
+        {% csrf_token %}
+        <label>Item/Product:</label>
+        <input type="text" name="item" />
+        <a href="{% url 'create-wish' %}">Add</a>
+    </form>
+<!--Go Home Button-->
+    <form action="{% url 'success' %}" method="post">
+        {% csrf_token %}
+        <input type="submit" value="Home" />
+    </form>
+<!--Logout Button-->
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <input type="submit" value="Logout" />
+    </form>
+
+    <h4>All Wishes</h4>
+    {% for wish in wishes %}
+        <p>{{ wish.content }}</p>
+        <!--Checking user: if my current user is == to the same user that created the secret...-->
+        
+        {% if user.id == wish.user.id %}
+        <!--Delete Button-->
+            <form action="{% url 'delete-wish' id=wish.id %}" method="post">
+                {% csrf_token %}
+                <input type="submit" value="Remove from my Wishlist" />
+            </form>
+        <!--Like Button-->
+        
+        {% elif user not in wish.shared_by.all %}
+            <a href="{% url 'shared-wish' id=wish.id %}">Add to My Wishlist</a>
+        <!--Unlike Button-->
+        {% else %}
+            <a href="{% url 'shared-wish' id=wish.id %}">Remove from my Wishlist</a>
+        {% endif %}
+    {% endfor %}
+    <!--Add Item Button-->
+    <form action="{% url 'create-wish' %}" method="post">
+        {% csrf_token %}
+        <input type="submit" value="Add Item" />
+    </form>
+</body>
+</html>

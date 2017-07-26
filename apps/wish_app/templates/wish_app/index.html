@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>My Wish List</title>
+</head>
+<body>
+    <h1>Welcome, {{ user.first_name }}!</h1>
+    <a href="{% url 'logout' %}">Logout</a>
+
+    <p>Your Wish List:</p>
+    <!--<table>
+        <tr>
+            <th>Item</th>
+            <th>Added By</th>
+            <th>Date Added</th>
+            <th>Action</th>
+        </tr>
+    {% for user in users %}
+        <tr>
+            <td>{{ user.wish }}</td>
+            <td>{{ user.first_name }}</td>
+            <td>{{ user.created_at }}</td>
+            <td>{{ user.delete}}</td>
+        </tr>
+    {% endfor %}
+    </table>-->
+    <form action="{% url 'create-wish' %}" method="post">
+        {% csrf_token %}
+        <textarea name="content"></textarea>
+        <input type="submit" value="Create" />
+    </form>
+    <h4>All Wishes Made:</h4>
+    <!--<table>
+        <tr>
+            <th>Item</th>
+            <th>Added By</th>
+            <th>Date Added</th>
+            <th>Action</th>
+        </tr>
+    {% for user in users %}
+        <tr>
+            <td>{{ user.wish }}</td>
+            <td>{{ user.first_name }}</td>
+            <td>{{ user.created_at }}</td>
+            <td>{{ user.delete}}</td>
+        </tr>
+    {% endfor %}
+    </table>-->
+    {% for wish in wishes %}
+        <p>{{ wish.content }}</p>
+        <!--Checking user: if my current user is == to the same user that created the wish...-->
+        {% if user.id == wish.user.id %}
+        <!--Delete Button-->
+            <form action="{% url 'delete' id=wish.id %}" method="post">
+                {% csrf_token %}
+                <input type="submit" value="Delete Wish" />
+            </form>
+        {% endif %}
+    {% endfor %}
+</body>
+</html>
